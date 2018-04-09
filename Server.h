@@ -32,7 +32,7 @@ public:
 	// Destroyer
 	~Server();
 
-	// Methods
+	// Methods basics
 	void initializeServer(void); 	
 	void acceptClients(void);		
 	void closeServer(void); 		

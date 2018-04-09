@@ -30,15 +30,44 @@ using namespace std;
 class Client{
 
 private:
-	bool state;	
-	int portServer;
-	int typeClient;
-	string ipServer;
+	bool state;						// Flag, verify state of connection
+	int portServer;					// Server connection port
+	int typeClient;					// Type -> 1) Client 2) Storage
+	string ipServer;				// IP address of the server
 	int descriptorClient;
 	struct sockaddr_in serverInfo;
 	
 public:
-	Client();
+	// Builder
+	Client(void);
+	Client(int, string, int); // Port server - IP server - Type client
+
+	// Destroyer
 	~Client();
+
+	// Methods basics
+	void connectToServer(void);
+	void receiveFile(void*);
+	void sendConfirmation(void*); 		// Confirmation of send of the file
+	void sendMD5(void*);				// To validate the file
+
+	static void * listenToServer(void*);
+	static void * writeToServer(void*,char *);
+	static void * options(void *);
+	static void * sendFile(void *);
+	static void * listFiles(void *);
+	static void * listStoredFiles(void *);
+	static void * countFiles(void *);		
+	static void * loadBalance(void *);
 	
+	// Setters
+	void setState(bool);
+	void setPortServer(int);
+	void setTypeClient(int);
+	void setIPServer(string);
+	void setDescriptorServer(int);
+
+	// Getters
+	
+
 };
