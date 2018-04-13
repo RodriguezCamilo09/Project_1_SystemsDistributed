@@ -169,3 +169,25 @@ void * Client::listFiles(void * cli){
 	char msg [] ="end"; 
 	send(client->getDescriptor(),(void *)msg,sizeof(msg),0);
 }
+
+/**
+ * [Client::contFiles description]
+ * @param  cli [description]
+ * @return     [description]
+ */
+void * Client::contFiles(void * cli){
+	Client * client = (Client *) cli;
+	int file_count = 0;
+	DIR * dirp;
+	struct dirent * entry;
+	dirp = opendir("./Files"); /* There should be error handling after this */
+	while ((entry = readdir(dirp)) != NULL) {
+	    if (entry->d_type == DT_REG) { /* If the entry is a regular file */
+	         file_count++;
+	    }
+	}
+	closedir(dirp);
+	cout<<"contFile"+file_count<<endl;
+	char msg = file_count; 
+	send(client->getDescriptor(),(void *)&msg,sizeof(msg),0);
+}
