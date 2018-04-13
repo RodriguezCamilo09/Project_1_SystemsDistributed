@@ -89,3 +89,83 @@ void * Client::options(void * cli){
 		break;
 	}
 }
+/**
+ * [Client::sendFile description]
+ * @param  cli [description]
+ * @return     [description]
+ */
+void * Client::sendFile(void * cli){
+	Client * client = (Client *) cli;
+	char url[200];
+	char buffer[BUFFSIZE];
+	char name[200];
+	cout<<"Ingrese la ruta del archivo"<<endl;
+	cin>>url;
+	cout<<"Ingrese el nombre del archivo junto a la extension"<<endl;
+	cin>>name;
+	cin.get();
+	FILE * file;
+	file = fopen(url, "rb");
+	char msg[] = "1";
+	writeServer((void *)cli,msg);
+	writeServer((void *)cli,name);
+	while(!feof(file)){
+		fread(buffer,sizeof(char),BUFFSIZE, file);
+		if(send(client->getDescriptor(),buffer,BUFFSIZE,0)==-1){
+			cout<<"Error send file"<<endl;
+		}
+	}
+	char menssage[80];
+	read(client->getDescriptor(),message,sizeof(menssage));
+	printf("\nConfirmación recibida:\n%s\n",menssage);
+	read(client->getDescriptor(),message,sizeof(menssage));
+	printf("\nMD5SUM:\n%s\n",message);
+	fclose(file);
+	opciones(cli);	
+}
+/**
+ * [Client::listStroredFiles description]
+ * @param  cli [description]
+ * @return     [description]
+ */
+void * Client::listStroredFiles(void * cli){
+
+}
+/**
+ * [Client::listFiles description]
+ * @param  cli [description]
+ * @return     [description]
+ */
+void * Client::listFiles(void * cli){
+	Client * client = (Client *) cli;
+	vector<string> listOfFiles;
+	DIR *dir;
+	struct dirent *ent;
+	dir = opendir ("./Archivos");
+
+  /* Miramos que no haya error */
+	if (dir == NULL) 
+		cout<<"No puedo abrir el directorio"<<endl;
+
+  /* Una vez nos aseguramos de que no hay error, ¡vamos a jugar! */
+  /* Leyendo uno a uno todos los archivos que hay */
+	cout<<"Listar archivos"<<endl;
+	while ((ent = readdir (dir)) != NULL) 
+	{
+      /* Nos devolverá el directorio actual (.) y el anterior (..), como hace ls */
+		if ( (strcmp(ent->d_name, ".")!=0) && (strcmp(ent->d_name, "..")!=0) )
+		{
+      /* Una vez tenemos el archivo, lo pasamos a una función para procesarlo. */
+			cout<<ent->d_name<<endl;
+			listOfFiles.push_back(ent->d_name);
+		}
+	}
+	closedir (dir);	
+	for(int i=0; i<listOfFiles.size(); i++){
+		string msg  = listOfFiles[i]; 
+		send(client->getDescriptor(),(void *)msg.c_str(),sizeof(msg),0);
+	}
+
+	char msg [] ="end"; 
+	send(client->getDescriptor(),(void *)msg,sizeof(msg),0);
+}
