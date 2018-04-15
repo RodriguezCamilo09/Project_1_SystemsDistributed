@@ -2,7 +2,7 @@
  * @version 1.0
  * @date 08/04/18
  * @author Camilo Rodriguez
- * Class: main.cpp
+ * Class: Main.cpp
  */
 
 #include <iostream>
@@ -12,10 +12,31 @@
 using namespace std;
 
 int main(int argc, char *argv[]) {
-	cout<<"------------------------------";
-	cout<<"--Seleccione tipo de maquina--";
-	cout<<"--1) Servidor               --";
-	cout<<"--2) Cliente                --";
-	cout<<"--3) Storagen               --";
-	cout<<"------------------------------";		
+	cout<<"------------------------------"<<endl;
+	cout<<"--Type machina              --"<<endl;
+	cout<<"--1) Server                 --"<<endl;
+	cout<<"--2) Client                 --"<<endl;
+	cout<<"--3) Storage                --"<<endl;
+	cout<<"------------------------------"<<endl;		
+	cin>>type;
+	cin.get();
+	cout <<"Port: ";
+	cin >> port;
+	cin.get();	
+	int val=type;	
+		if(val==1){		
+			Server server;			
+			server.setPort(port);
+			server.initializeServer();
+			server.runServer();			
+			while(1);
+		}		
+		if(val==2 || val == 3){		
+			cout<< "Host - IP: ";
+				string host;
+				getline(cin,host);		
+			Client * client = new Client(port,host,val);
+				client->connectToServer();
+		}
+		return 0;	
 }
