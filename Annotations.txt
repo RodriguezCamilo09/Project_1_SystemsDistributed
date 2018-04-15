@@ -1,1 +1,23 @@
-AF_INET -> is a family of addresses that is used to designate the type of addresses with which your socket can communicate (in this case, the Internet Protocol v4 addresses)
+descriptorServer=socket(AF_INET, SOCK_STREAM, 0);
+int sockfd = socket(domain, type, protocol)
+SOCK_STREAM: TCP (confiable, orientado a conexión);
+AF_INET -> Es una familia de direcciones que se utiliza para designar el tipo de direcciones con las que su socket se puede comunicar (en este caso, las direcciones del Protocolo de Internet v4)
+TCP/SOCK_STREAM -> Es un protocolo basado en conexión. La conexión se establece y las dos partes mantienen una conversación hasta que la conexión termina por una de las partes o por un error de red.
+
+idBind=bind(descriptorServer, (struct sockaddr *)&serverInfo, sizeof(serverInfo));
+links the socket to the address and to the port number specified in addr (custom data structure).
+
+
+INADDR_ANY es una constante, que contiene 0 en valor. esto se usará solo cuando desee conectarse desde todos los puertos activos que no le interesan ip-add
+
+exit(EXIT_SUCCESS); -> Ejecución exitosa de un programa
+
+
+/**
+ * [Compilacion] 
+ */
+g++ *.cpp -std=c++11 -o distributed -pthread
+./distributed
+
+g++ *.cpp -lpthread -o distributed
+./distributed
