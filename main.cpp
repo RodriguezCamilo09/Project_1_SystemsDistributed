@@ -24,19 +24,18 @@ int main(int argc, char *argv[]) {
 	cin >> port;
 	cin.get();	
 	int val=type;	
-		if(val==1){		
-			Server server;			
-			server.setPort(port);
-			server.initializeServer();
-			server.runServer();			
-			while(1);
-		}		
-		if(val==2 || val == 3){		
-			cout<< "Host - IP: ";
-				string host;
-				getline(cin,host);		
-			Client * client = new Client(port,host,val);
-				client->connectToServer();
-		}
-		return 0;	
+	if(val==1){		
+		Server server;			
+		server.setPort(port);
+		server.initializeServer();
+		server.runServer();			
+		while(1);
+	}if(val==2 || val == 3){		
+		cout<< "Host - IP: ";
+		string host;
+		getline(cin,host);		
+		Client * client = new Client(port,host,val);
+		client->connectToServer();
+	}
+	return 0;	
 }
