@@ -1,0 +1,1 @@
+AF_INET -> is a family of addresses that is used to designate the type of addresses with which your socket can communicate (in this case, the Internet Protocol v4 addresses)

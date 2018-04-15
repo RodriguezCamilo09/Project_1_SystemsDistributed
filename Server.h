@@ -1,8 +1,8 @@
 /**
  * @version 1.0
- * @date 08/04/18
+ * @date 04/04/18
  * @author Camilo Rodriguez
- * Class: server.h
+ * Class: Server.h
  */
 
 #include <string.h>
@@ -14,25 +14,32 @@
 class Server{
 
 private:	
-	bool state; 								// Flag, verify state of connection
-	int port;									// Connection port	
-	int idBind;									// Linker identification	
-	int descriptorServer;
-	int countClients; 							// Number of clients
-	int countStorage;							// Number of storage machines
-	struct sockaddr_in serverInfo;
-	vector<ClientInfo *> clientsDescriptor;		// List of clients connected
-	vector<ClientInfo *> clientsTemporal;		// Auxiliary list of clients
-	vector<ClientInfo *> clientsStorage;		// List of storage machines
+	bool state; // Flag, verify state of connection
+	int port;	// Connection port	
+	int idBind;	// Linker identification	
+	int descriptorServer; // It returns the operating system when allocating a socket
+	int countClients; // Number of clients
+	int countStorage; // Number of storage machines
+	struct sockaddr_in serverInfo; // Socket information and the connection that is made
+	vector<ClientInfo *> clientsDescriptor;	// List of clients connected
+	vector<ClientInfo *> clientsTemporal;	// Auxiliary list of clients
+	vector<ClientInfo *> clientsStorage;	// List of storage machines
 
 public:
-	// Builder
+	/**
+	 * Builder
+	 */
 	Server(void);
 	Server(int);	// Port
-	// Destroyer
+
+	/**
+	 * Destroyer
+	 */
 	~Server();
 
-	// Methods basics
+	/**
+	 * Basic methods of connection
+	 */
 	void initializeServer(void); 	
 	void acceptClients(void);		
 	void closeServer(void); 		
@@ -40,12 +47,16 @@ public:
 	static void * startServer(void *);
 	vector<ClientInfo *> selectStorage();
 
-	// Methods for sending files
+	/**
+	 * Methods for sending files
+	 */
 	void receiveFile(void*, void *, void *, void *);
-	void sendConfirmation(void*);						// Confirmation of arrival of the file
-	void sendMD5(void*);								// To validate the file
+	void sendConfirmation(void*);	// Confirmation of arrival of the file
+	void sendMD5(void*);	// Check if a file on Linux arrived full and secure
 
-	// Setters		
+	/**
+	 * Setters	
+	 */
 	void setPort(int);
 	void setIdBind(int);
 	void setState(bool);
@@ -54,7 +65,9 @@ public:
 	void setCountStorage(int);	
 	void setDescriptorServer(int);
 
-	// Getters
+	/**
+	 * Getters
+	 */
 	int getPort(void);
 	int getIdBind(void);
 	bool getState(void);
@@ -62,6 +75,6 @@ public:
 	int getCountStorage(void);
 	struct sockaddr_in getServerInfo(void);
 	vector<ClientInfo *> getClients(void);
-	vector<ClientInfo *> getClientesTemporal();
+	vector<ClientInfo *> getClientsTemporal();
 
 };
