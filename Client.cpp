@@ -1,11 +1,23 @@
+/**
+ * @version 1.0
+ * @date 08/04/18
+ * @author Camilo Rodriguez
+ * Class: Client.h
+ */
 #include "Client.h"
 
+/**
+ * Builder
+ */
 Client::Client(){
 	this->portServer=1234;
 	this->ipServer="192.168.0.2";
 	this->state=true;
 }
 
+/**
+ * Builder
+ */
 Client::Client(int port, string ip, int typeClient){
 	this->portServer=port;
 	this->ipServer=ip;
@@ -13,9 +25,10 @@ Client::Client(int port, string ip, int typeClient){
 	this->typeClient= typeClient;
 }
 
-Client::~Cliente(){
-
-}
+/**
+ * Destroyer
+ */
+Client::~Cliente(){}
 
 
 /**
@@ -41,7 +54,7 @@ void * Client::listenServer(void *cli){
 				client->coutnFiles((void *)client);
 			}
 		}else{
-			cout<<"Se desconecto del servido"<<endl;
+			cout<<"disconnected from the server"<<endl;
 			close(client->getDescriptor());
 			exit(EXIT_SUCCESS);
 		}
@@ -49,10 +62,10 @@ void * Client::listenServer(void *cli){
 }
 
 /**
- * [Client::writeServer description]
- * @param  cli [description]
- * @param  msg [description]
- * @return     [description]
+ * [Client::writeServer]
+ * @param  cli 
+ * @param  msg 
+ * @return 
  */
 void * Client::writeServer(void * cli, char msg[]){
 	Client* client = (Client *) cli;
@@ -61,16 +74,16 @@ void * Client::writeServer(void * cli, char msg[]){
 	sleep(1);
 	if(i==-1){
 		connected=0;
-		cout<<"Desconectado"<<endl;
+		cout<<"Disconnected"<<endl;
 		close(client->getDescriptor());
 		exit(EXIT_SECCESS);
 	}
 }
 
 /**
- * [Client::options description]
- * @param  cli [description]
- * @return     [description]
+ * [Client::options]
+ * @param  cli 
+ * @return     
  */
 void * Client::options(void * cli){
 	int option;
@@ -85,23 +98,23 @@ void * Client::options(void * cli){
 		break;
 		case 2: listFiles(cli);
 		break;
-		case 3: balanceCharge(cli);
-		break;
+		default: loadBalance(cli);
 	}
 }
+
 /**
- * [Client::sendFile description]
- * @param  cli [description]
- * @return     [description]
+ * [Client::sendFile]
+ * @param  cli 
+ * @return     
  */
 void * Client::sendFile(void * cli){
 	Client * client = (Client *) cli;
 	char url[200];
 	char buffer[BUFFSIZE];
 	char name[200];
-	cout<<"Ingrese la ruta del archivo"<<endl;
+	cout<<"File path"<<endl;
 	cin>>url;
-	cout<<"Ingrese el nombre del archivo junto a la extension"<<endl;
+	cout<<"File name and extension"<<endl;
 	cin>>name;
 	cin.get();
 	FILE * file;
@@ -117,45 +130,36 @@ void * Client::sendFile(void * cli){
 	}
 	char menssage[80];
 	read(client->getDescriptor(),message,sizeof(menssage));
-	printf("\nConfirmación recibida:\n%s\n",menssage);
+	printf("\nConfirmation received:\n%s\n",menssage);
 	read(client->getDescriptor(),message,sizeof(menssage));
 	printf("\nMD5SUM:\n%s\n",message);
 	fclose(file);
-	opciones(cli);	
+	options(cli);	
 }
-/**
- * [Client::listStroredFiles description]
- * @param  cli [description]
- * @return     [description]
- */
-void * Client::listStroredFiles(void * cli){
 
-}
 /**
- * [Client::listFiles description]
- * @param  cli [description]
- * @return     [description]
+ * [Client::listStroredFiles]
+ * @param  cli 
+ * @return     
+ */
+void * Client::listStroredFiles(void * cli){}
+
+/**
+ * [Client::listFiles]
+ * @param  cli 
+ * @return     
  */
 void * Client::listFiles(void * cli){
 	Client * client = (Client *) cli;
 	vector<string> listOfFiles;
 	DIR *dir;
 	struct dirent *ent;
-	dir = opendir ("./Archivos");
-
-  /* Miramos que no haya error */
+	dir = opendir ("./Files");
 	if (dir == NULL) 
-		cout<<"No puedo abrir el directorio"<<endl;
-
-  /* Una vez nos aseguramos de que no hay error, ¡vamos a jugar! */
-  /* Leyendo uno a uno todos los archivos que hay */
-	cout<<"Listar archivos"<<endl;
-	while ((ent = readdir (dir)) != NULL) 
-	{
-      /* Nos devolverá el directorio actual (.) y el anterior (..), como hace ls */
-		if ( (strcmp(ent->d_name, ".")!=0) && (strcmp(ent->d_name, "..")!=0) )
-		{
-      /* Una vez tenemos el archivo, lo pasamos a una función para procesarlo. */
+		cout<<"error when opening directory"<<endl;
+	cout<<"List files"<<endl;
+	while ((ent = readdir (dir)) != NULL) {
+		if ( (strcmp(ent->d_name, ".")!=0) && (strcmp(ent->d_name, "..")!=0) ){     
 			cout<<ent->d_name<<endl;
 			listOfFiles.push_back(ent->d_name);
 		}
@@ -165,29 +169,154 @@ void * Client::listFiles(void * cli){
 		string msg  = listOfFiles[i]; 
 		send(client->getDescriptor(),(void *)msg.c_str(),sizeof(msg),0);
 	}
-
 	char msg [] ="end"; 
 	send(client->getDescriptor(),(void *)msg,sizeof(msg),0);
 }
 
 /**
- * [Client::contFiles description]
- * @param  cli [description]
- * @return     [description]
+ * [Client::countFiles]
+ * @param  cli 
+ * @return     
  */
-void * Client::contFiles(void * cli){
+void * Client::countFiles(void * cli){
 	Client * client = (Client *) cli;
 	int file_count = 0;
 	DIR * dirp;
 	struct dirent * entry;
-	dirp = opendir("./Files"); /* There should be error handling after this */
+	dirp = opendir("./Files"); 
 	while ((entry = readdir(dirp)) != NULL) {
-	    if (entry->d_type == DT_REG) { /* If the entry is a regular file */
+	    if (entry->d_type == DT_REG) { 
 	         file_count++;
 	    }
 	}
 	closedir(dirp);
-	cout<<"contFile"+file_count<<endl;
+	cout<<"countFiles"+file_count<<endl;
 	char msg = file_count; 
 	send(client->getDescriptor(),(void *)&msg,sizeof(msg),0);
+}
+
+/**
+ * [Client::loadBalance]
+ * @return
+ */
+void * Client::loadBalance(){}
+
+/**
+ * [Client::connectToServer]
+ */
+void Client::connectToServer(){
+	descriptorClient = socket(AF_INET,SOCK_STREAM,0);
+	serverInfo.sin_family=AF_INET;
+	inet_pton(AF_INET,ipServer.c_str(),&serverInfo.sin_addr);
+	serverInfo.sin_port=htons(portServer);
+	int conn=connect(descriptorClient,(struct sockaddr *)&serverInfo,sizeof(serverInfo));
+	cout<<typeClient<<endl;
+	if(conn!=-1){
+		if(typeClient==2){
+			char msg[] = "1";
+			writeToServer((void *)this,msg);
+			pthread_t threadListen;
+			pthread_create(&threadListen,NULL,listenToServer,(void *)this);
+			cout<<"User"<<endl;
+			options((void *)this);
+		}else {
+			char msg[] = "2";
+			writeToServer((void *)this,msg);
+			pthread_t threadListen;
+			pthread_create(&threadListen,NULL,listenToServer,(void *)this);
+			cout<<"Storage"<<endl;
+		}		
+	//	pthread_t threadWrite;
+	//	pthread_create(&threadWrite,NULL,writeToServer,(void *)this);
+		while(1);
+	}else{
+		cout<<"Unable to connect"<<endl;
+	}
+}
+
+/**
+ * [Client::receiveFile]
+ * @param cli 
+ */
+void Client::receiveFile(void * cli){
+	Client * client = (Client *) cli;
+	char buffer[BUFFSIZE];
+	int received = -1;
+	char messageOfClient[128];
+	recv(client->getDescriptor(), (void *)&messageOfClient,128,0);
+	cout<<messageOfClient<<endl;
+	cout<<"Receive file"<<endl;
+	char url []= "Files/";
+	strcpy (url,messageOfClient);	
+	FILE * file;
+	file = fopen(url,"wb");
+	while((received = recv(client->getDescriptor(), buffer, BUFFSIZE, 0)) > 0){
+		printf("%s",buffer);
+		fwrite(buffer,sizeof(char),1,file);
+	}
+	sendConfirmation((void *)client);
+	sendMD5SUM((void *)client);
+	fclose(file);
+}
+
+/**
+ * [Client::sendConfirmation]
+ * @param cli
+ */
+void Client::sendConfirmation(void * cli){
+	Client * client = (Client *) cli;
+	char message[80] = "Received";
+	int lengthMessage = strlen(message);
+	printf("\nConfirmation send\n");
+	if(write(client->getDescriptor(),message,sizeof(message)) == -1)
+		perror("Error, confirmation send");
+}
+
+/**
+ * [Client::sendMD5SUM]
+ * @param cli 
+ */
+void Client::sendMD5SUM(void * cli){
+	Client * client = (Client *) cli;
+	FILE *tmp;
+	char fileName[] = "verification";
+	char md5sum[80];
+	system("md5sum fileReceived >> verification");
+	tmp = fopen(fileName,"r");
+	fscanf(tmp,"%s",md5sum);	
+	printf("\nMD5SUM:%s\n",md5sum);	
+	write(client->getDescriptor(),md5sum,sizeof(md5sum));
+	fclose(tmp);
+}
+
+/**
+ * [Client::getDescriptor]
+ * @return 
+ */
+int Client::getDescriptor(){
+	return this->descriptorClient;
+}
+
+/**
+ * [Client::getState]
+ * @return
+ */
+bool Client::getState(){
+	return this->state;
+}
+
+/**
+ * [Client::setDescriptor]
+ * @param descriptor 
+ */
+void Client::setDescriptor(int descriptor){
+	this->descriptorClient=descriptor;
+}
+
+/**
+ * [Client::setState]
+ * @param state 
+ */
+void Client::setState(bool state){
+	this->state=state;
 }

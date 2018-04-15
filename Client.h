@@ -2,7 +2,7 @@
  * @version 1.0
  * @date 08/04/18
  * @author Camilo Rodriguez
- * Class: client.h
+ * Class: Client.h
  */
 
 #include <sys/socket.h>
@@ -38,14 +38,20 @@ private:
 	struct sockaddr_in serverInfo;
 	
 public:
-	// Builder
+	/**
+	 * Builder
+	 */
 	Client(void);
 	Client(int, string, int); // Port server - IP server - Type client
 
-	// Destroyer
+	/**
+	 * Destroyer
+	 */
 	~Client();
 
-	// Methods basics
+	/**
+	 * Method basics
+	 */
 	void connectToServer(void);
 	void receiveFile(void*);
 	void sendConfirmation(void*); 		// Confirmation of send of the file
@@ -60,14 +66,19 @@ public:
 	static void * countFiles(void *);		
 	static void * loadBalance(void *);
 	
-	// Setters
+	/**
+	 * Setters	 
+	 */
 	void setState(bool);
 	void setPortServer(int);
 	void setTypeClient(int);
 	void setIPServer(string);
 	void setDescriptorServer(int);
 
-	// Getters
-	
+	/**
+	 * Getters	 
+	 */
+	int getDescriptor(void)	;
+	bool getState(void);
 
 };
