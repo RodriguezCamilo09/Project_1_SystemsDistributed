@@ -22,13 +22,13 @@ Client::Client(int port, string ip, int typeClient){
 	this->portServer=port;
 	this->ipServer=ip;
 	this->state=true;
-	this->typeClient= typeClient;
+	this->typeClient=typeClient;
 }
 
 /**
  * Destroyer
  */
-Client::~Cliente(){}
+Client::~Client(){}
 
 
 /**
@@ -36,7 +36,7 @@ Client::~Cliente(){}
  * @param  cli [description]
  * @return     [description]
  */
-void * Client::listenServer(void *cli){
+void * Client::listenToServer(void *cli){
 	Client* client=(Client *) cli;
 	char messageServer[60];
 	char key[] = "1";  // receb files
@@ -67,7 +67,7 @@ void * Client::listenServer(void *cli){
  * @param  msg 
  * @return 
  */
-void * Client::writeServer(void * cli, char msg[]){
+void * Client::writeToServer(void * cli, char msg[]){
 	Client* client = (Client *) cli;
 	int connected=1;
 	int i= send(client->getDescriptor(),(void *)msg,sizeof(msg),0);
@@ -87,10 +87,10 @@ void * Client::writeServer(void * cli, char msg[]){
  */
 void * Client::options(void * cli){
 	int option;
-	count<<"Options of the client"<<endl;
-	count<<"1) Send file"<<endl;
-	count<<"2) List files of thestorage"<<endl;
-	count<<"3) Balance of charge"<<endl;
+	cout<<"Options of the client"<<endl;
+	cout<<"1) Send file"<<endl;
+	cout<<"2) List files of thestorage"<<endl;
+	cout<<"3) Balance of charge"<<endl;
 	cin>>option;
 	cin.get();
 	switch(option){
@@ -120,18 +120,18 @@ void * Client::sendFile(void * cli){
 	FILE * file;
 	file = fopen(url, "rb");
 	char msg[] = "1";
-	writeServer((void *)cli,msg);
-	writeServer((void *)cli,name);
+	writeToServer((void *)cli,msg);
+	writeToServer((void *)cli,name);
 	while(!feof(file)){
 		fread(buffer,sizeof(char),BUFFSIZE, file);
 		if(send(client->getDescriptor(),buffer,BUFFSIZE,0)==-1){
 			cout<<"Error send file"<<endl;
 		}
 	}
-	char menssage[80];
-	read(client->getDescriptor(),message,sizeof(menssage));
-	printf("\nConfirmation received:\n%s\n",menssage);
-	read(client->getDescriptor(),message,sizeof(menssage));
+	char message[80];
+	read(client->getDescriptor(),message,sizeof(message));
+	printf("\nConfirmation received:\n%s\n",message);
+	read(client->getDescriptor(),message,sizeof(message));
 	printf("\nMD5SUM:\n%s\n",message);
 	fclose(file);
 	options(cli);	
@@ -199,7 +199,7 @@ void * Client::countFiles(void * cli){
  * [Client::loadBalance]
  * @return
  */
-void * Client::loadBalance(){}
+void * Client::loadBalance(void * cli){}
 
 /**
  * [Client::connectToServer]
