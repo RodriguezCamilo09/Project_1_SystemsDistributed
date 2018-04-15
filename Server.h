@@ -6,7 +6,7 @@
  */
 
 #include <string.h>
-#include "clientInfo.h"
+#include "ClientInfo.h"
 
 #define maxClients 20 	// Maximum number of clients
 #define BUFFSIZE 1
