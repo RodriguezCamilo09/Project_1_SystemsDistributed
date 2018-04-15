@@ -43,7 +43,7 @@ void * Client::listenToServer(void *cli){
 	char key2[] = "2"; // list files
 	char key3[] = "3"; // Count files
 	while(1){
-		int i = recv(client->getDescriptor(), (void *)$messageServer,60,0);
+		int i = recv(client->getDescriptor(), (void *)&messageServer,60,0);
 		if(i!=0){
 			cout<<"listening"<<endl;
 			if(strcmp(key,messageServer) != 0){
@@ -51,7 +51,7 @@ void * Client::listenToServer(void *cli){
 			}else if (strcmp(key2,messageServer) != 0){
 				client->listFiles((void *)client);
 			}else if(strcmp(key3,messageServer) != 0){
-				client->coutnFiles((void *)client);
+				client->countFiles((void *)client);
 			}
 		}else{
 			cout<<"disconnected from the server"<<endl;
@@ -76,7 +76,7 @@ void * Client::writeToServer(void * cli, char msg[]){
 		connected=0;
 		cout<<"Disconnected"<<endl;
 		close(client->getDescriptor());
-		exit(EXIT_SECCESS);
+		exit(EXIT_SUCCESS);
 	}
 }
 
@@ -138,11 +138,11 @@ void * Client::sendFile(void * cli){
 }
 
 /**
- * [Client::listStroredFiles]
+ * [Client::listStoredFiles]
  * @param  cli 
  * @return     
  */
-void * Client::listStroredFiles(void * cli){}
+void * Client::listStoredFiles(void * cli){}
 
 /**
  * [Client::listFiles]
@@ -309,7 +309,7 @@ bool Client::getState(){
  * [Client::setDescriptor]
  * @param descriptor 
  */
-void Client::setDescriptor(int descriptor){
+void Client::setDescriptorServer(int descriptor){
 	this->descriptorClient=descriptor;
 }
 

@@ -56,12 +56,12 @@ void Server::closeServer(){
  * @param  ser 
  * @return     
  */
-void * recevClient(void * ser){
+void * recevClient(void *ser){
 	Server * server = (Server *) ser;
 
 	vector<ClientInfo *> listClients = server->getClientsTemporal();
 	cout<<"ListClients"<<endl;
-	ClientInfo * client = (ClientInfo * listClients[server->getCountClients()-1]);
+	ClientInfo * client = (ClientInfo *) listClients[server->getCountClients()-1];
 	char messageOfClient[128];
 	char key[]= "1";
 
@@ -117,11 +117,11 @@ void Server::acceptClients(){
 					countClients++;
 					cout<<"Client"<<endl;
 				}else{
-					clientDescriptorStorage.push_back(new ClientInfo(descriptorClient,clientInfo));
+					clientsTemporal.push_back(new ClientInfo(descriptorClient,clientInfo));
 					//pthread_t clientThread;
 					//pthread_create(&clientThread,NULL,&recevClient,(void *) clientDescriptorStorage[countStorage]);
-					clientDescriptorStorage[CountStorage]->setId(CountStorage);
-					CountStorage++;
+					clientsTemporal[countStorage]->setId(countStorage);
+					countStorage++;
 					cout<<"Storage"<<endl;
 				}
 			}else{
@@ -172,8 +172,8 @@ vector<ClientInfo *> Server::selectStorage(){
  * @param  Server 
  * @return        
  */
-void * Server::startServer(void * Server){
-	Server * server=(Server *) Server;
+void * Server::startServer(void * ser){
+	Server * server=(Server *) ser;
 	server->acceptClients();
 }
 

@@ -12,6 +12,8 @@
 using namespace std;
 
 int main(int argc, char *argv[]) {
+	int type=0;
+	int port=0;
 	cout<<"------------------------------"<<endl;
 	cout<<"--Type machina              --"<<endl;
 	cout<<"--1) Server                 --"<<endl;

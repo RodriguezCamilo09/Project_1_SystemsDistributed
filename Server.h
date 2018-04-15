@@ -5,8 +5,8 @@
  * Class: Server.h
  */
 
-#include <string.h>
 #include "ClientInfo.h"
+#include <string.h>
 
 #define maxClients 20 	// Maximum number of clients
 #define BUFFSIZE 1
@@ -58,19 +58,16 @@ public:
 	 * Setters	
 	 */
 	void setPort(int);
-	void setIdBind(int);
-	void setState(bool);
-	void setServerInfo(int);
-	void setCountClients(int);
-	void setCountStorage(int);	
+	void setIdBind(int);	
+	void setServerInfo(struct sockaddr_in);	
 	void setDescriptorServer(int);
 
 	/**
 	 * Getters
 	 */
+	int getDescriptorServer(void);
 	int getPort(void);
-	int getIdBind(void);
-	bool getState(void);
+	int getIdBind(void);	
 	int getCountClients(void);
 	int getCountStorage(void);
 	struct sockaddr_in getServerInfo(void);
