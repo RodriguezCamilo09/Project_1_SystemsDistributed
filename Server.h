@@ -52,7 +52,7 @@ public:
 	 */
 	void receiveFile(void*, void *, void *, void *);
 	void sendConfirmation(void*);	// Confirmation of arrival of the file
-	void sendMD5(void*);	// Check if a file on Linux arrived full and secure
+	void sendMD5SUM(void*);	// Check if a file on Linux arrived full and secure
 
 	/**
 	 * Setters	

@@ -55,7 +55,7 @@ public:
 	void connectToServer(void);
 	void receiveFile(void*);
 	void sendConfirmation(void*); 		// Confirmation of send of the file
-	void sendMD5(void*);				// To validate the file
+	void sendMD5SUM(void*);				// To validate the file
 
 	static void * listenToServer(void*);
 	static void * writeToServer(void*,char *);
@@ -69,10 +69,7 @@ public:
 	/**
 	 * Setters	 
 	 */
-	void setState(bool);
-	void setPortServer(int);
-	void setTypeClient(int);
-	void setIPServer(string);
+	void setState(bool);		
 	void setDescriptorServer(int);
 
 	/**
