@@ -45,7 +45,7 @@ void * Client::listenToServer(void *cli){
 	while(1){
 		int i = recv(client->getDescriptor(), (void *)&messageServer,60,0);
 		if(i!=0){
-			cout<<"listening"<<endl;
+			cout<<"listening..."<<endl;
 			if(strcmp(key,messageServer) != 0){
 				client->receiveFile((void *)client);
 			}else if (strcmp(key2,messageServer) != 0){
@@ -54,7 +54,7 @@ void * Client::listenToServer(void *cli){
 				client->countFiles((void *)client);
 			}
 		}else{
-			cout<<"disconnected from the server"<<endl;
+			cout<<"Disconnected..."<<endl;
 			close(client->getDescriptor());
 			exit(EXIT_SUCCESS);
 		}
@@ -74,7 +74,7 @@ void * Client::writeToServer(void * cli, char msg[]){
 	sleep(1);
 	if(i==-1){
 		connected=0;
-		cout<<"Disconnected"<<endl;
+		cout<<"Disconnected..."<<endl;
 		close(client->getDescriptor());
 		exit(EXIT_SUCCESS);
 	}
@@ -87,10 +87,12 @@ void * Client::writeToServer(void * cli, char msg[]){
  */
 void * Client::options(void * cli){
 	int option;
-	cout<<"Options of the client"<<endl;
-	cout<<"1) Send file"<<endl;
-	cout<<"2) List files of thestorage"<<endl;
-	cout<<"3) Balance of charge"<<endl;
+	cout<<"**************************"<<endl;
+	cout<<"* Options Client        **"<<endl;
+	cout<<"* 1) Send file          **"<<endl;
+	cout<<"* 2) List files Storage **"<<endl;
+	cout<<"* 3) Balance Charge     **"<<endl;
+	cout<<"**************************"<<endl;
 	cin>>option;
 	cin.get();
 	switch(option){
@@ -112,9 +114,9 @@ void * Client::sendFile(void * cli){
 	char url[200];
 	char buffer[BUFFSIZE];
 	char name[200];
-	cout<<"File path"<<endl;
+	cout<<"File path..."<<endl;
 	cin>>url;
-	cout<<"File name and extension"<<endl;
+	cout<<"Name - Extension"<<endl;
 	cin>>name;
 	cin.get();
 	FILE * file;
@@ -125,7 +127,7 @@ void * Client::sendFile(void * cli){
 	while(!feof(file)){
 		fread(buffer,sizeof(char),BUFFSIZE, file);
 		if(send(client->getDescriptor(),buffer,BUFFSIZE,0)==-1){
-			cout<<"Error send file"<<endl;
+			cout<<"Error send file..."<<endl;
 		}
 	}
 	char message[80];
@@ -156,8 +158,8 @@ void * Client::listFiles(void * cli){
 	struct dirent *ent;
 	dir = opendir ("./Files");
 	if (dir == NULL) 
-		cout<<"error when opening directory"<<endl;
-	cout<<"List files"<<endl;
+		cout<<"Error, opening directory..."<<endl;
+	cout<<"List files..."<<endl;
 	while ((ent = readdir (dir)) != NULL) {
 		if ( (strcmp(ent->d_name, ".")!=0) && (strcmp(ent->d_name, "..")!=0) ){     
 			cout<<ent->d_name<<endl;
@@ -190,7 +192,7 @@ void * Client::countFiles(void * cli){
 	    }
 	}
 	closedir(dirp);
-	cout<<"countFiles"+file_count<<endl;
+	cout<<"Count files"+file_count<<endl;
 	char msg = file_count; 
 	send(client->getDescriptor(),(void *)&msg,sizeof(msg),0);
 }
@@ -217,20 +219,24 @@ void Client::connectToServer(){
 			writeToServer((void *)this,msg);
 			pthread_t threadListen;
 			pthread_create(&threadListen,NULL,listenToServer,(void *)this);
-			cout<<"User"<<endl;
+			cout<<"++++++++++"<<endl;
+			cout<<"+ Client +"<<endl;
+			cout<<"++++++++++"<<endl;
 			options((void *)this);
 		}else {
 			char msg[] = "2";
 			writeToServer((void *)this,msg);
 			pthread_t threadListen;
 			pthread_create(&threadListen,NULL,listenToServer,(void *)this);
-			cout<<"Storage"<<endl;
+			cout<<"xxxxxxxxxxx"<<endl;
+			cout<<"x Storage x"<<endl;
+			cout<<"xxxxxxxxxxx"<<endl;
 		}		
-	//	pthread_t threadWrite;
-	//	pthread_create(&threadWrite,NULL,writeToServer,(void *)this);
+		pthread_t threadWrite;
+		pthread_create(&threadWrite,NULL,writeToServer,(void *)this);
 		while(1);
 	}else{
-		cout<<"Unable to connect"<<endl;
+		cout<<"Unable to connect..."<<endl;
 	}
 }
 
@@ -245,7 +251,7 @@ void Client::receiveFile(void * cli){
 	char messageOfClient[128];
 	recv(client->getDescriptor(), (void *)&messageOfClient,128,0);
 	cout<<messageOfClient<<endl;
-	cout<<"Receive file"<<endl;
+	cout<<"Receive file..."<<endl;
 	char url []= "Files/";
 	strcpy (url,messageOfClient);	
 	FILE * file;
@@ -265,7 +271,7 @@ void Client::receiveFile(void * cli){
  */
 void Client::sendConfirmation(void * cli){
 	Client * client = (Client *) cli;
-	char message[80] = "Received";
+	char message[80] = "Received...";
 	int lengthMessage = strlen(message);
 	printf("\nConfirmation send\n");
 	if(write(client->getDescriptor(),message,sizeof(message)) == -1)

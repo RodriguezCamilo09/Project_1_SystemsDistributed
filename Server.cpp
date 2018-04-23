@@ -41,7 +41,7 @@ void Server::initializeServer(){
 	idBind=bind(descriptorServer, (struct sockaddr *)&serverInfo, sizeof(serverInfo));	
 	listen(descriptorServer, maxClients);
 	if(descriptorServer==-1 && idBind==-1)
-		cout<<"Error, starting the server..."<<endl;
+		cout<<"Error, starting server..."<<endl;
 }
 
 /**
@@ -60,15 +60,15 @@ void * recevClient(void *ser){
 	Server * server = (Server *) ser;
 
 	vector<ClientInfo *> listClients = server->getClientsTemporal();
-	cout<<"ListClients"<<endl;
+	cout<<"ListClients..."<<endl;
 	ClientInfo * client = (ClientInfo *) listClients[server->getCountClients()-1];
 	char messageOfClient[128];
 	char key[]= "1";
 
 	while(client->getState()){
-		cout<<"listening" <<endl;
+		cout<<"listening..." <<endl;
 		int i=recv(client->getDescriptorClient(), (void *)&messageOfClient,128,0);
-		cout<<"listening" <<endl;
+		cout<<"listening..." <<endl;
 		sleep(1);
 		if(i!=0){
 			if(strcmp (key,messageOfClient) != 0){
@@ -78,7 +78,7 @@ void * recevClient(void *ser){
 				server->receiveFile((void *)client,(void *) select[0],(void *)select[1], (void *) messageOfClient);
 			}
 		}else{
-			cout<<"the client with IP was disconnected: "<<inet_ntoa(client->getClientInfo().sin_addr)<<" Error "<<endl;
+			cout<<"The client with IP was disconnected: "<<inet_ntoa(client->getClientInfo().sin_addr)<<" Error "<<endl;
 			client->setState(false);
 			close(client->getDescriptorClient());
 		}
@@ -100,10 +100,10 @@ void Server::acceptClients(){
 	while((countClients+countStorage)<maxClients){ 
 		struct sockaddr_in clientInfo;
 		int size=sizeof(struct sockaddr_in);
-		cout<<"accepting clients..."<<endl;
+		cout<<"Accepting clients..."<<endl;
 		descriptorClient=accept(this->descriptorServer, (struct sockaddr *)&clientInfo, (socklen_t*) &size);						
 		if(descriptorClient!=-1){
-			cout<<"Connected client" <<endl;
+			cout<<"Connected client..." <<endl;
 			char messageOfClient[128];
 			int i=recv(descriptorClient, (void *)&messageOfClient,128,0);
 			if(i!=0){
@@ -118,14 +118,14 @@ void Server::acceptClients(){
 					cout<<"Client"<<endl;
 				}else{
 					clientsTemporal.push_back(new ClientInfo(descriptorClient,clientInfo));
-					//pthread_t clientThread;
-					//pthread_create(&clientThread,NULL,&recevClient,(void *) clientDescriptorStorage[countStorage]);
+					pthread_t clientThread;
+					pthread_create(&clientThread,NULL,&recevClient,(void *) clientsTemporal[countStorage]);
 					clientsTemporal[countStorage]->setId(countStorage);
-					countStorage++;
+					countStorage++;					
 					cout<<"Storage"<<endl;
 				}
 			}else{
-				cout<<"the client with IP was disconnected..."<<endl;
+				cout<<"The client with IP was disconnected..."<<endl;
 				close(descriptorClient);
 			}
 		}
@@ -143,9 +143,9 @@ vector<ClientInfo *> Server::selectStorage(){
 		if(send(client->getDescriptorClient(), (void *)messageToClient, sizeof(messageToClient),0)!=-1){
 			sleep(1);
 			char messageOfClient[128];
-			cout<<"Start selection"<<endl;
+			cout<<"Start selection..."<<endl;
 			int i=recv(client->getDescriptorClient(), (void *)&messageOfClient,128,0);
-			cout<<"End selection"<<endl;
+			cout<<"End selection..."<<endl;
 			client->setCountFiles(*(int*)messageOfClient);
 		}
 	}
@@ -201,15 +201,15 @@ void Server::receiveFile(void * cli, void * sel1, void * sel2, void * fileName){
 	int received = -1;
 	char msg[] = "1";
 	if(send(selectStorage1->getDescriptorClient(),(void *)msg,sizeof(msg),0)==-1){
-		cout<<"Error when sending the file"<<endl;
+		cout<<"Error, sending the file"<<endl;
 	}
 	if(send(selectStorage2->getDescriptorClient(),(void *)msg,sizeof(msg),0)==-1){
-	  cout<<"Error when sending the file"<<endl;
+	  cout<<"Error, sending the file"<<endl;
 	}
 	//FILE * file;
 	//file = fopen("Files/fileReceived","wb");
 	if(send(selectStorage1->getDescriptorClient(),(void *)nameFile,sizeof(nameFile),0)==-1){
-		cout<<"Error when sending the file"<<endl;
+		cout<<"Error, sending the file"<<endl;
 	}
 	if(send(selectStorage2->getDescriptorClient(),(void *)nameFile,sizeof(nameFile),0)==-1){
 	  cout<<"Error when sending the file"<<endl;
@@ -218,10 +218,10 @@ void Server::receiveFile(void * cli, void * sel1, void * sel2, void * fileName){
 		printf("%s",buffer);
 		//fwrite(buffer,sizeof(char),1,file);
 		if(send(selectStorage1->getDescriptorClient(),buffer,BUFFSIZE,0)==-1){
-		  cout<<"Error when sending the file"<<endl;
+		  cout<<"Erro, sending the file"<<endl;
 		}
 		if(send(selectStorage2->getDescriptorClient(),buffer,BUFFSIZE,0)==-1){
-		  cout<<"Error when sending the file"<<endl;
+		  cout<<"Error, sending the file"<<endl;
 		}
 	}
 	sendConfirmation((void *)client);
@@ -239,7 +239,7 @@ void Server::sendConfirmation(void * cli){
 	int lengthMessage = strlen(message);
 	printf("\nConfirmation send\n");
 	if(write(client->getDescriptorClient(),message,sizeof(message)) == -1)
-			perror("Error sending confirmation");
+			perror("Error, sending confirmation");
 
 	
 }
